@@ -1,13 +1,17 @@
 #include "LightService.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <TimeLib.h>
-#include <NtpClientLib.h>
 #include <WiFiUdp.h>
-#include "SSDP.h"
-#include <aJSON.h> // Replace avm/pgmspace.h with pgmspace.h there and set #define PRINT_BUFFER_LEN 4096 ################# IMPORTANT
 #include <assert.h>
 #include <FS.h>
+
+#include <TimeLib.h>
+#include <NtpClientLib.h>
+#include <aJSON.h> // Replace avm/pgmspace.h with pgmspace.h there and set #define PRINT_BUFFER_LEN 4096 ################# IMPORTANT
+
+#include "SSDP.h"
+#include "color.h"
 
 #if PRINT_BUFFER_LEN < 4096
 #  error aJson print buffer length PRINT_BUFFER_LEN must be increased to at least 4096
@@ -21,49 +25,11 @@ String gatewayString;
 // The username of the client (currently we authorize all clients simulating a pressed button on the bridge)
 String client;
 
-
 // Group and Scene file name prefixes for SPIFFS support 
 String GROUP_FILE_TEMPLATE = "GROUP-%d.json";
 String SCENE_FILE_TEMPLATE = "SCENE-%d.json";
 
-
 ESP8266WebServer *HTTP;
-
-struct rgbcolor {
-  rgbcolor(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {};
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-};
-
-#define MIN(a,b) ((a<b)?a:b)
-#define MAX(a,b) ((a>b)?a:b)
-struct hsvcolor {
-  hsvcolor(const rgbcolor& color) {
-    float r = ((float)color.r)/COLOR_SATURATION;
-    float g = ((float)color.g)/COLOR_SATURATION;
-    float b = ((float)color.b)/COLOR_SATURATION;
-    float mi = MIN(MIN(r,g),b);
-    float ma = MAX(MAX(r,g),b);
-    float diff = ma - mi;
-    v = ma;
-    h = 0;
-    s = (!v)?0:(diff/ma);
-    if (diff) {
-      if (r == v) {
-            h = (g - b) / diff + (g < b ? 6.0f : 0.0f);
-        } else if (g == v) {
-            h = (b - r) / diff + 2.0f;
-        } else {
-            h = (r - g) / diff + 4.0f;
-        }
-        h /= 6.0f;
-    }
-  };
-  float h;
-  float s;
-  float v;
-};
 
 String removeSlashes(String uri) {
   if (uri[0] == '/') {
@@ -939,6 +905,7 @@ void LightServiceClass::begin(ESP8266WebServer *svr) {
   serial.toLowerCase();
   
   Serial.println("Starting SSDP...");
+
   SSDP.setSchemaURL("description.xml");
   SSDP.setHTTPPort(80);
   SSDP.setName("Philips hue clone");
@@ -949,17 +916,16 @@ void LightServiceClass::begin(ESP8266WebServer *svr) {
   SSDP.setModelURL("http://www.meethue.com");
   SSDP.setManufacturer("Royal Philips Electronics");
   SSDP.setManufacturerURL("http://www.philips.com");
-
-  //SSDP.setDeviceType((char*)"upnp:rootdevice");
   SSDP.setDeviceType("urn:schemas-upnp-org:device:basic:1");
-  //SSDP.setMessageFormatCallback(ssdpMsgFormatCallback);
+
   SSDP.begin();
+
   Serial.println("SSDP Started");
   Serial.println("FS Starting");
+
   SPIFFS.begin();
   initializeGroupSlots();
   initializeSceneSlots();
-
 }
 
 void LightServiceClass::update() {

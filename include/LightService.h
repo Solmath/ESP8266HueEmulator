@@ -1,4 +1,8 @@
-#include <Arduino.h>
+#pragma once
+
+#include <ESP8266WiFi.h>          //ESP8266 Core WiFi Library
+// #include <Arduino.h>
+#include <aJSON.h>
 
 enum HueColorType {
   TYPE_HUE_SAT, TYPE_CT, TYPE_XY
@@ -15,7 +19,6 @@ enum HueEffect {
 enum class HueBulbType {
   EXTENDED_COLOR_LIGHT, DIMMABLE_LIGHT
 };
-
 
 struct HueLightInfo {
   bool on = false;
@@ -47,7 +50,6 @@ class LightHandler {
 
 // Max number of exposed lights is directly related to aJSON PRINT_BUFFER_LEN, 14 for 4096
 #define MAX_LIGHT_HANDLERS 2
-#define COLOR_SATURATION 255.0f
 
 class ESP8266WebServer;
 class LightServiceClass {
