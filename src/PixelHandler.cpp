@@ -5,9 +5,9 @@
 #include <NeoPixelAnimator.h>
 #include "color.h"
 
-PixelHandler::PixelHandler(NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart1Ws2812xMethod> strip, NeoPixelAnimator animator):
-  _strip(strip),
-  _animator(animator)
+PixelHandler::PixelHandler(NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart1Ws2812xMethod> *strip, NeoPixelAnimator *animator):
+  _strip(*strip),
+  _animator(*animator)
 {
 }
 

@@ -14,7 +14,7 @@ class PixelHandler : public LightHandler{
     NeoPixelAnimator _animator;
     int16_t colorloopIndex = -1;
   public:
-    PixelHandler(NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart1Ws2812xMethod> strip, NeoPixelAnimator animator);
+    PixelHandler(NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart1Ws2812xMethod> *strip, NeoPixelAnimator *animator);
 
     void handleQuery(int lightNumber, HueLightInfo newInfo, aJsonObject* raw); 
     HueLightInfo getInfo(int lightNumber);

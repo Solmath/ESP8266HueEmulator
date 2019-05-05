@@ -837,6 +837,11 @@ void lightsIdStateFn(WcFnRequestHandler *whandler, String requestUri, HTTPMethod
         aJson.deleteItem(parsedRoot);
         return;
       }
+      Serial.println("--------------------------------");
+      Serial.println(requestUri);
+      Serial.println(aJson.print(parsedRoot));
+      Serial.println();
+      Serial.println();
       
       handler->handleQuery(numberOfTheLight, newInfo, parsedRoot);
       sendJson(generateTargetPutResponse(parsedRoot, "/lights/" + whandler->getWildCard(1) + "/state/"));

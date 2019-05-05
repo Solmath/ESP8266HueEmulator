@@ -83,14 +83,15 @@ void setup() {
 
   MDNS.addService("http", "tcp", 80);
 
-/* TODO: Currently there is a problem with the PixelHandler class, that leads to resets of the ESP
-          The reason for this is, that the class was moved to its own sourcefiles improperly.
-
+/* TODO:  There seems to be a problem with the PixelHandler, that causes errors in the hue essentials app
+          Runtime of PixelHandler too long? Debug PixelHandler. Does the issue also appear in the original verison (*.ino)?
+          Maybe put the class back in the main file for testing purposes.
+*/
   // setup pixels as lights
   for (int i = 0; i < MAX_LIGHT_HANDLERS && i < pixelCount; i++) {
-    LightService.setLightHandler(i, new PixelHandler(strip, animator));
+    LightService.setLightHandler(i, new PixelHandler(&strip, &animator));
   }
-*/
+
   // We'll get the time eventually ...
   if (timeStatus() == timeSet) {
     Serial.println(NTP.getTimeDateString(now()));
